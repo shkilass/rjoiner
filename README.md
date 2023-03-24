@@ -3,6 +3,8 @@
 <h1><strong>RJoiner</strong></h1>
 <p>Join files to 1 by 1 command!</p>
 
+---
+
 [![Issues](https://img.shields.io/github/issues/ftdot/rjoiner?style=for-the-badge)](https://github.com/ftdot/rjoiner/issues)
 [![Latest tag](https://img.shields.io/github/v/tag/ftdot/rjoiner?style=for-the-badge)](https://github.com/ftdot/rjoiner/tags)
 
