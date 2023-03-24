@@ -1,0 +1,10 @@
+out/
+temp/
+stub/target/
+stub/Cargo.lock
+
+# Test files
+test/
+Clicker.exe
+FileDate.exe
+calc.vbs

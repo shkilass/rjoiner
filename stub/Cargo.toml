@@ -1,0 +1,28 @@
+[package]
+name = "RustyJoiner"
+version = "1.2.0"
+edition = "2021"
+build = "build.rs"
+
+[profile.release]
+strip = "debuginfo"
+
+[features]
+icon = ["embed-resource"]
+admin = ["embed-resource"]
+build = []
+enable_win_console = []
+show_messagebox = ["msgbox"]
+
+[build-dependencies]
+aes-gcm = "0.10.1"
+base64 = "0.21.0"
+rand = "0.8.5"
+embed-resource = { version = "1.8", optional = true }
+yazi = "0.1.4"
+
+[dependencies]
+aes-gcm = "0.10.1"
+base64 = "0.21.0"
+msgbox = { version = "0.7.0", optional = true }
+yazi = "0.1.4"
