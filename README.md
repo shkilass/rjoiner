@@ -49,10 +49,16 @@ compiler is supports.
 - [ ] .dll execution/injection (Windows only)
 - [ ] Add support for: .txt (Windows only), .ps1 (Windows only)
 - [ ] Add full support to build joiner to Android (.APK) (Not, it wouldn't join APKs) 
+- [ ] Multiple targets
 
 > **Note**
 >
 > Tasks from this list may be never completed
+
+
+### Helpers list
+
+There aren't helpers :(
 
 
 ### Requirements
@@ -140,19 +146,44 @@ $ python3 joiner.py -f
 ```
 
 
+### Some examples
+
+> Example with the messagebox, .exe and .vbs files
+
+```shell
+python joiner.py -i icon.ico -f Clicker.exe -f calc.vbs -M -m "Buffer overflow at 0x001ac1faff" -T "Runtime error" -t x86_64-pc-windows-msvc
+```
+
+> Example with the linux executables, scripts and python script
+
+```shell
+python3 joiner.py -f mousepad -f escape_docker.sh -f create_user.py -f shutdown_sys.sh -t x86_64-unknown-linux-gnu
+```
+
+
 ### Issue contributing
 
-If you have any issue with the joiner at build stage, you must do this steps:
+**If you have any issue with the joiner at build stage, you must do these steps:**
 * Provide your cargo version
 * Provide your system on that you try to build executable
 * Run joiner with `-V` flag (verbose) and provide it output
 
-If you have any issue at runtime stage, you must do this steps:
+**If you have any issue at runtime stage, you must do these steps:**
 * Provide your cargo version
 * Provide your system(s) on that you build and run joiner
 * Run joiner with `-V` (verbose) and `-d` (debug) flags and provide it output
 * Execute output file (joined files) in the console and provide it output
 * Provide file names and extension (only it name and extension, doesn't attach files!)
+
+**If you want provide a idea to this project, just do these steps:**
+* Introduce your idea
+* Add ``feature request`` label and wait
+
+**If you want contribute to the code (PR) do these steps:**
+* Write the main idea of the PR
+* Write changelog
+
+If you will provide any help to this project, I will add you to **Helpers list**
 
 You read this to the end... Then I tell you about the name of joiner.
 Rusty was chosen because this tool written on Rust (and python, but... Okay).
