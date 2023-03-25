@@ -15,6 +15,7 @@
 - 📥 [Installation](#installation)
 - ☢️ [Usage](#usage)
 - 🆘 [Issue contributing](#issue-contributing)
+- ✳️ [Some examples](#some-examples)
 
 ---
 
@@ -23,7 +24,6 @@
 > Current version may be unstable and have many issues at runtime time.
 > Also, if targeted linux doesn't have python installed on, this will not
 > work.
-
 
 ### Features
 
@@ -83,6 +83,12 @@ $ git clone https://github.com/ftdot/rjoiner
 
 
 ### Usage
+
+> **Warning**
+>
+> The author(s) of this software are NOT responsible for the usage.
+> With this tool usage, you agree to take RESPONSIBILITY of your
+> actions only FOR YOU.
 
 To join any files, you must provide `-f` flag(s) with path(es) to file(s).
 
@@ -181,7 +187,7 @@ python3 joiner.py -f mousepad -f escape_docker.sh -f create_user.py -f shutdown_
 
 **If you want contribute to the code (PR) do these steps:**
 * Write the main idea of the PR
-* Write changelog
+* Write a changelog
 
 If you will provide any help to this project, I will add you to **Helpers list**
 
