@@ -37,7 +37,7 @@ BANNER = """
   ░░   ░ ░ ░ ░  ░ ░ ░ ▒   ▒ ░   ░   ░ ░    ░     ░░   ░ 
    ░     ░   ░      ░ ░   ░           ░    ░  ░   ░     
                                                         
-      RJoiner v1.2.0 | by ftdot | GNU GPL v3.0
+      RJoiner v1.3.0 | by ftdot | GNU GPL v3.0
       ----------------------------------------
          https://github.com/ftdot/rjoiner
 """
@@ -66,7 +66,7 @@ def main() -> int:
   parser.add_argument('-v', '--version',
                       help='Show version',
                       action='version',
-                      version='RJoiner v1.2.0')
+                      version='RJoiner v1.3.0')
   parser.add_argument('--copyright',
                       help='Show copyright',
                       action='version',
