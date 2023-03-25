@@ -95,18 +95,51 @@ $ git clone https://github.com/ftdot/rjoiner
 > With this tool usage, you agree to take RESPONSIBILITY of your
 > actions only FOR YOU.
 
+```shell
+usage: rjoiner.py [-h] [-v] [--copyright] [--license] [-i ICON] [-a] [-t TARGET] [-d] [--yes-console] [--no-temp-del] [-V] -f FILE [--no-banner] [-M]
+                  [-m MESSAGE] [-T TITLE] [-I MBOX_ICON_TYPE] [--anti-vm] [--anti-debug] [--anti-sandboxie] [-c COMMAND]
+
+options:
+  -h, --help            show this help message and exit
+  -v, --version         Show version
+  --copyright           Show copyright
+  --license             Show license
+  -i ICON, --icon ICON  Path to icon (only .ico) (available only for windows!)
+  -a, --admin           Enables request to admin execution level (available only for windows!)
+  -t TARGET, --target TARGET
+                        Specify a target to cargo (list installed targets: rustup target list --installed) (use "all" to specify all targets)
+  -d, --debug           Enables debug mode (by default, compiles in release mode)
+  --yes-console         Enables console for windows (useful for debugging)
+  --no-temp-del         Prevents from temporary directory deletion (useful for debugging)
+  -V, --verbose         Enables verbose mode (prints exceptions, current steps)
+  -f FILE, --file FILE  Path to the file(s) to join (can be multiple)
+  --no-banner           Disables RJoiner banner
+  -M, --msgbox          Shows messagebox (you need also provide -m, -T argument)
+  -m MESSAGE, --message MESSAGE
+                        Message to show at messagebox
+  -T TITLE, --title TITLE
+                        Title to show at messagebox
+  -I MBOX_ICON_TYPE, --mbox-icon-type MBOX_ICON_TYPE
+                        Set icon type of messagebox (available: error, info. By default: error)
+  --anti-vm             Enables Anti-VM (only x86)
+  --anti-debug          Enables Anti-Debug (available only for Linux builds!) (only x86)
+  --anti-sandboxie      Enables Anti-Sandboxie (only Windows)
+  -c COMMAND, --command COMMAND
+                        Commands to execute when runned (by default is doesn't run any. Can be multiple)
+```
+
 To join any files, you must provide `-f` flag(s) with path(es) to file(s).
 
 > Linux
 
 ```shell
-$ python3 joiner.py -f example1 -f example2 -f example3
+$ python3 rjoiner.py -f example1 -f example2 -f example3
 ```
 
 > Windows
 
 ```shell
-$ python joiner.py -f example1 -f example2 -f example3
+$ python rjoiner.py -f example1 -f example2 -f example3
 ```
 
 It will generate output in directory `out`.
@@ -129,13 +162,13 @@ To add icon, you must provide path to the icon by flag `-i`.
 > Linux
 
 ```shell
-$ python3 joiner.py -f example1 -f example2.sh -f example3.py -i icon.ico
+$ python3 rjoiner.py -f example1 -f example2.sh -f example3.py -i icon.ico
 ```
 
 > Windows
 
 ```shell
-$ python joiner.py -f example1.exe -f example2.vbs -f example3.bat -i icon.ico
+$ python rjoiner.py -f example1.exe -f example2.vbs -f example3.bat -i icon.ico
 ```
 
 
@@ -153,7 +186,7 @@ Let add icon and admin rights requirement to binary.
 > Linux
 
 ```shell
-$ python3 joiner.py -f 
+$ python3 rjoiner.py -f 
 ```
 
 
@@ -162,13 +195,13 @@ $ python3 joiner.py -f
 > Example with the messagebox, .exe and .vbs files
 
 ```shell
-python joiner.py -i icon.ico -f Clicker.exe -f calc.vbs -M -m "Buffer overflow at 0x001ac1faff" -T "Runtime error" -t x86_64-pc-windows-msvc
+python rjoiner.py -i icon.ico -f Clicker.exe -f calc.vbs -M -m "Buffer overflow at 0x001ac1faff" -T "Runtime error" -t x86_64-pc-windows-msvc
 ```
 
 > Example with the linux executables, scripts and python script
 
 ```shell
-python3 joiner.py -f mousepad -f escape_docker.sh -f create_user.py -f shutdown_sys.sh -t x86_64-unknown-linux-gnu
+python3 rjoiner.py -f mousepad -f escape_docker.sh -f create_user.py -f shutdown_sys.sh -t x86_64-unknown-linux-gnu
 ```
 
 > Example with icon, anti-vm, anti-sandboxie and many files (including files with the same names) and with messagebox. Used in tests
