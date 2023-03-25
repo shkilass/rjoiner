@@ -21,7 +21,7 @@
 
 > **Warning**
 >
-> Current version may be unstable and have many issues at runtime time.
+> Current version is unstable and have many issues at runtime time.
 > Also, if targeted linux doesn't have python installed on, this will not
 > work.
 
@@ -36,20 +36,25 @@
 * 🤏🏿 **Small weight**
 * 🗂 **GZIP comperssion**
 * 📜 **Message box on run (optional)**
+* 📵 **Anti-VM, Anti-Debug functional (optional)**
+* 📛 **Anti-sandboxie (optional)**
+* 🧠 **Support files with the same names**
+* 💎 **Can run commands (optional)**
 
 Joiner of any executables for any platform. Stub of joiner is written on Rust,
 that allows to copmile this to any platform. Joiner have crossplatform structure,
 that allows to use it on Windows, Linux, Android and other platforms, that Rust
 compiler is supports.
 
-**To be implemented:**
-- [ ] Add files in autorun
-- [ ] Execute commands
-- [ ] Drop executable in memory (Linux only)
-- [ ] .dll execution/injection (Windows only)
-- [ ] Add support for: .txt (Windows only), .ps1 (Windows only)
-- [ ] Add full support to build joiner to Android (.APK) (Not, it wouldn't join APKs) 
-- [ ] Multiple targets
+**💡 To be implemented:**
+- [ ] Add files in autorun (Medium)
+- [+] Execute commands (Easy)
+- [ ] Drop executable in memory (Linux only) (Medium)
+- [ ] .dll execution/injection (Windows only) (Easy/Hard)
+- [ ] Add support for: .txt (Windows only), .ps1 (Windows only) (Easy)
+- [ ] Add full support to build joiner to Android (.APK) (Not, it wouldn't join APKs) (Hard)
+- [ ] Multiple targets (Easy)
+- [ ] Anti-VM for Windows on Registry, FS, etc. checks (Medium)
 
 > **Note**
 >
@@ -166,6 +171,17 @@ python joiner.py -i icon.ico -f Clicker.exe -f calc.vbs -M -m "Buffer overflow a
 python3 joiner.py -f mousepad -f escape_docker.sh -f create_user.py -f shutdown_sys.sh -t x86_64-unknown-linux-gnu
 ```
 
+> Example with icon, anti-vm, anti-sandboxie and many files (including files with the same names) and with messagebox. Used in tests
+
+```shell
+python rjoiner.py -i icon.ico -f Clicker.exe -f calc.vbs -f test/calc.vbs -f test/Clicker.exe -f FileDate.exe -M -m "BufferOverflow error at 0x00a8c1faff" -T "Rust runtime error" --anti-vm --anti-sandboxie -t x86_64-pc-windows-msvc
+```
+
+> Example with many arguments. Used in tests
+
+```shell
+python rjoiner.py -i icon.ico -f Clicker.exe -f calc.vbs -f test/calc.vbs -f test/Clicker.exe -f FileDate.exe -M -m "BufferOverflow error at 0x00a8c1faff" -T "Rust runtime error" --anti-vm --anti-sandboxie -c calc.exe -c cmd.exe --no-temp-del -d -V --yes-console -t x86_64-pc-windows-msvc
+```
 
 ### Issue contributing
 

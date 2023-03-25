@@ -79,6 +79,10 @@ fn zip(data: Vec<u8>) -> Option<Vec<u8>> {
   }
 }
 
+fn add_command(command: &str) -> String { 
+  format!("\n    match shell(\"{0}\").spawn() {{\n         Ok(_) => {{}}\n         #[allow(unused_variables)]\n         Err(e) => {{ #[cfg(debug_assertions)] println!(\"Error while running command \\\"{0}\\\"\"); }}\n    }};", command)
+}
+
 fn main() {
 
   let key = generate_random_key();

