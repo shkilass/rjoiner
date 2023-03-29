@@ -48,13 +48,14 @@ that allows to use it on Windows, Linux, Android and other platforms, that Rust
 compiler is supports.
 
 **💡 To be implemented:**
-- [+] Add files in autorun (Medium)
-- [+] Execute commands (Easy)
+- [*] Add files in autorun (Medium)
+- [*] Execute commands (Easy)
 - [ ] Drop executable in memory (Linux only) (Medium)
 - [ ] .dll execution/injection (Windows only) (Easy/Hard)
-- [ ] Add support for: .txt (Windows only), .ps1 (Windows only) (Easy)
+- [+] Add support for: .txt (Windows only), .ps1 (Windows only) (Easy) (Added support for all
+  executable files on Windows with simple cmd.exe usage to start files)
 - [ ] Add full support to build joiner to Android (.APK) (Not, it wouldn't join APKs) (Hard)
-- [ ] Multiple targets (Easy)
+- [*] Multiple targets (Easy)
 - [ ] Anti-VM for Windows on Registry, FS, etc. checks (Medium)
 - [ ] GUI (Medium)
 - [ ] Builds with Cargo & Python integrated in (Medium)
