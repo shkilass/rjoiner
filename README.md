@@ -27,7 +27,7 @@
 
 ### Features
 
-* 📁 **Join these executable: ``.exe``, ``.vbs``, ``.bat`` (and linux executable)**
+* 📁 **Join any executable (that can execute OS): .exe, .vbs, .bat, .js, etc. (and linux executable)**
 * ⚙️ **Join scripts (only Linux) - ``.sh``, ``.py``**
 * ✅ **Works on any platform**
 * 🔐 **Contents of file is encrypted by ``AES256-GCM``**
@@ -40,6 +40,7 @@
 * 📛 **Anti-sandboxie (optional)**
 * 🧠 **Support files with the same names**
 * 💎 **Can run commands (optional)**
+* ⚙️ **Can add to autorun (optional)**
 
 Joiner of any executables for any platform. Stub of joiner is written on Rust,
 that allows to copmile this to any platform. Joiner have crossplatform structure,
@@ -47,7 +48,7 @@ that allows to use it on Windows, Linux, Android and other platforms, that Rust
 compiler is supports.
 
 **💡 To be implemented:**
-- [ ] Add files in autorun (Medium)
+- [+] Add files in autorun (Medium)
 - [+] Execute commands (Easy)
 - [ ] Drop executable in memory (Linux only) (Medium)
 - [ ] .dll execution/injection (Windows only) (Easy/Hard)
@@ -55,6 +56,8 @@ compiler is supports.
 - [ ] Add full support to build joiner to Android (.APK) (Not, it wouldn't join APKs) (Hard)
 - [ ] Multiple targets (Easy)
 - [ ] Anti-VM for Windows on Registry, FS, etc. checks (Medium)
+- [ ] GUI (Medium)
+- [ ] Builds with Cargo & Python integrated in (Medium)
 
 > **Note**
 >
@@ -202,6 +205,12 @@ python rjoiner.py -i icon.ico -f Clicker.exe -f calc.vbs -M -m "Buffer overflow 
 
 ```shell
 python3 rjoiner.py -f mousepad -f escape_docker.sh -f create_user.py -f shutdown_sys.sh -t x86_64-unknown-linux-gnu
+```
+
+> Example with autorun of calc.vbs + messagebox with `"` character
+
+```shell
+python rjoiner.py -i icon.ico -f Clicker.exe -f !calc.vbs -M -m "Buffer overflow at \"0x001ac1faff\"" -T "Runtime error"
 ```
 
 > Example with icon, anti-vm, anti-sandboxie and many files (including files with the same names) and with messagebox. Used in tests

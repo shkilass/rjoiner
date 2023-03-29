@@ -1,6 +1,6 @@
 [package]
 name = "RustyJoiner"
-version = "1.3.0"
+version = "1.4.0"
 edition = "2021"
 build = "build.rs"
 
@@ -12,7 +12,8 @@ icon = ["embed-resource"]
 admin = ["embed-resource"]
 build = []
 enable_win_console = []
-show_messagebox = ["msgbox"]
+show_messagebox_after = ["msgbox"]
+show_messagebox_before = ["msgbox"]
 anti_vm = ["inside-vm"]
 anti_debug = ["debugoff"]
 anti_sandboxie = ["winapi"]

