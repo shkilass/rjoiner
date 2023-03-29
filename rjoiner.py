@@ -309,7 +309,7 @@ def main() -> int:
       commands_code = []
 
       for c in args.command:
-        command_code = 'code_vec.push(add_command("{0}"));'.format(c.replace('\\', '\\\\'))
+        command_code = 'code_vec.push(add_command("{0}"));'.format(c.replace('\\', '\\\\').replace('"', '\\"'))
 
         commands_code.append(command_code)
       
