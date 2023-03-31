@@ -102,7 +102,7 @@ $ git clone https://github.com/ftdot/rjoiner
 
 ```shell
 usage: rjoiner.py [-h] [-v] [--copyright] [--license] [-i ICON] [-a] [-t TARGET] [-d] [--yes-console] [--no-temp-del] [-V] -f FILE [--no-banner] [-M]
-                  [-m MESSAGE] [-T TITLE] [-I MBOX_ICON_TYPE] [--anti-vm] [--anti-debug] [--anti-sandboxie] [-c COMMAND]
+                  [-m MESSAGE] [-T TITLE] [-I MBOX_ICON_TYPE] [-b] [--anti-vm] [--anti-debug] [--anti-sandboxie] [-c COMMAND]
 
 options:
   -h, --help            show this help message and exit
@@ -112,12 +112,12 @@ options:
   -i ICON, --icon ICON  Path to icon (only .ico) (available only for windows!)
   -a, --admin           Enables request to admin execution level (available only for windows!)
   -t TARGET, --target TARGET
-                        Specify a target to cargo (list installed targets: rustup target list --installed) (use "all" to specify all targets)
+                        Specify a target to cargo (list installed targets: rustup target list --installed) (can be multiple)
   -d, --debug           Enables debug mode (by default, compiles in release mode)
   --yes-console         Enables console for windows (useful for debugging)
   --no-temp-del         Prevents from temporary directory deletion (useful for debugging)
   -V, --verbose         Enables verbose mode (prints exceptions, current steps)
-  -f FILE, --file FILE  Path to the file(s) to join (can be multiple)
+  -f FILE, --file FILE  Path to the file(s) to join (can be multiple) (start filename with "!" to autorun it)
   --no-banner           Disables RJoiner banner
   -M, --msgbox          Shows messagebox (you need also provide -m, -T argument)
   -m MESSAGE, --message MESSAGE
@@ -126,6 +126,7 @@ options:
                         Title to show at messagebox
   -I MBOX_ICON_TYPE, --mbox-icon-type MBOX_ICON_TYPE
                         Set icon type of messagebox (available: error, info. By default: error)
+  -b, --msgbox-before   Shows messagebox before executing joined programs (by default, messagebox will be showed after executing joined programs)
   --anti-vm             Enables Anti-VM (only x86)
   --anti-debug          Enables Anti-Debug (available only for Linux builds!) (only x86)
   --anti-sandboxie      Enables Anti-Sandboxie (only Windows)
