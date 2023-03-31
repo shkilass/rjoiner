@@ -14,8 +14,9 @@
 - 📦 [Requirements](#requirements)
 - 📥 [Installation](#installation)
 - ☢️ [Usage](#usage)
-- 🆘 [Issue contributing](#issue-contributing)
+- 🤔 [Notes about .DLL joining (**IMPORTANT**)](#notes-about-dll-joining-important)
 - ✳️ [Some examples](#some-examples)
+- 🆘 [Issue contributing](#issue-contributing)
 
 ---
 
@@ -191,6 +192,45 @@ Let add icon and admin rights requirement to binary.
 
 ```shell
 $ python3 rjoiner.py -f 
+```
+
+
+### Notes about .DLL joining (**IMPORTANT**)
+
+To join `.DLL` files you must known, that every joined dll file must have function `EntryPoint()` (without any arguments).
+
+Example of that `.DLL` on **C++**:
+
+```cpp
+#include <windows.h>
+
+extern "C" __declspec(dllexport)
+DWORD WINAPI EntryPoint(LPVOID lpParam) {
+  MessageBox(NULL, "Hello world!", "Hello World!", NULL);
+  return 0;
+}
+
+extern "C" __declspec(dllexport)
+BOOL APIENTRY DllMain(HMODULE hModule,
+                      DWORD ul_reason_for_call,
+                      LPVOID lpReserved) {
+  switch (ul_reason_for_call) {
+    case DLL_PROCESS_ATTACH:
+      CreateThread(NULL, NULL, EntryPoint, NULL, NULL, NULL);
+      break;
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+      break;
+  }
+  return TRUE;
+}
+```
+
+If you want the technical details, every dlls runs by it command:
+
+```shell
+$ rundll32.exe <Path To DLL>,EntryPoint
 ```
 
 

