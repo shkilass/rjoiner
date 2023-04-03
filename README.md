@@ -24,7 +24,7 @@
 >
 > Current version is unstable and have many issues at runtime time.
 > Also, if targeted linux doesn't have python installed on, this will not
-> work.
+> work with `.py` files joined in!
 
 ### Features
 
