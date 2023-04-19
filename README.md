@@ -268,12 +268,11 @@ python rjoiner.py -i icon.ico -f Clicker.exe -f calc.vbs -f test/calc.vbs -f tes
 
 ---
 
-<!-- There is tags, you can ignore it -->
-<p>
+**There is tags, just ignore it**
+
 merge exe files, join exe files, executables joiner, rjoiner, rusty joiner,
 joiner on rust, rust programming language, merge executables, exe joiner,
 join vbs and executables, merge vbs and executables, merge scripts, merge
 python files, merge linux scripts, js files joiner, easy joiner, easy merge,
 compile two files in one, merge two files, commands macros, linux files merge,
 merge linux executables, ftdot
-</p>
