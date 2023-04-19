@@ -11,6 +11,7 @@
 ---
 
 - ✅ [Features](#features)
+- 😎 [Helpers list](#helpers-list) -- they're cool :)
 - 📦 [Requirements](#requirements)
 - 📥 [Installation](#installation)
 - ☢️ [Usage](#usage)
@@ -20,55 +21,29 @@
 
 ---
 
-> **Warning**
->
-> Current version is unstable and have many issues at runtime time.
-> Also, if targeted linux doesn't have python installed on, this will not
-> work with `.py` files joined in!
-
 ### Features
 
-* 📁 **Join any executable (that can execute OS): .exe, .vbs, .bat, .js, etc. (and linux executable)**
+* 📁 **Join any executable (that can execute OS): .exe, .vbs, .bat, .js,**
+  **etc. (and linux executables)**
 * ⚙️ **Join scripts (only Linux) - ``.sh``, ``.py``**
 * ✅ **Works on any platform**
-* 🔐 **Contents of file is encrypted by ``AES256-GCM``**
+* 🔐 **Contents of files is encrypted by ``AES256-GCM``**
 * 👤 **Admin rights requirement (optional) (only for Windows)**
 * 🌆 **Custom icon (optional) (only for Windows)**
 * 🤏🏿 **Small weight**
 * 🗂 **GZIP comperssion**
 * 📜 **Message box on run (optional)**
 * 📵 **Anti-VM, Anti-Debug functional (optional)**
-* 📛 **Anti-sandboxie (optional)**
-* 🧠 **Support files with the same names**
-* 💎 **Can run commands (optional)**
-* ⚙️ **Can add to autorun (optional)**
+* 📛 **Anti-Sandboxie (optional)**
+* 💎 **Can run commands when output file runned (optional)**
+* ⚙️ **Can add files to autorun (optional)**
 
-Joiner of any executables for any platform. Stub of joiner is written on Rust,
-that allows to copmile this to any platform. Joiner have crossplatform structure,
+Join any executables for any platform. Stub of joiner is written on Rust, that
+allows to compile this to any platform. Joiner have cross platform structure,
 that allows to use it on Windows, Linux, Android and other platforms, that Rust
-compiler is supports.
-
-**💡 To be implemented:**
-* [x] Add files in autorun (Medium)
-* [x] Execute commands (Easy)
-* [ ] Drop executable in memory (Linux only) (Medium)
-* [ ] .dll execution/injection (Windows only) (Easy/Hard)
-* [x] Add support for: .txt (Windows only), .ps1 (Windows only) (Easy) (Added support for all
-  executable files on Windows with simple cmd.exe usage to start files)
-* [ ] Add full support to build joiner to Android (.APK) (Not, it wouldn't join APKs) (Hard)
-* [x] Multiple targets (Easy)
-* [ ] Anti-VM for Windows on Registry, FS, etc. checks (Medium)
-* [ ] GUI (Medium)
-* [ ] Builds with Cargo & Python integrated in (Medium)
-
-> **Note**
->
-> Tasks from this list may be never completed
-
-
-### Helpers list
-
-There aren't helpers :(
+compiler is supports. Joiner uses python as helper to create easy CLI. You can
+use it as utility in your projects. Ex.: Your program requires joined executables,
+you can with RJoiner CLI build this executable and use it for your program.
 
 
 ### Requirements
@@ -96,13 +71,12 @@ $ git clone https://github.com/ftdot/rjoiner
 
 > **Warning**
 >
-> The author(s) of this software are NOT responsible for the usage.
-> With this tool usage, you agree to take RESPONSIBILITY of your
-> actions only FOR YOU.
+> The author(s) of this software are NOT responsible for its use by other users.
+> By using this tool, you agree that only you responsible for its use.
 
 ```shell
-usage: rjoiner.py [-h] [-v] [--copyright] [--license] [-i ICON] [-a] [-t TARGET] [-d] [--yes-console] [--no-temp-del] [-V] -f FILE [--no-banner] [-M]
-                  [-m MESSAGE] [-T TITLE] [-I MBOX_ICON_TYPE] [-b] [--anti-vm] [--anti-debug] [--anti-sandboxie] [-c COMMAND]
+usage: rjoiner.py [-h] [-v] [--copyright] [--license] [-i ICON] [-a] [-t TARGET] [-d] [-V] -f FILE [--no-banner] [-M] [-m MESSAGE] [-T TITLE]
+                  [-I MBOX_ICON_TYPE] [-b] [--anti-vm] [--anti-debug] [--anti-sandboxie] [-c COMMAND]
 
 options:
   -h, --help            show this help message and exit
@@ -113,9 +87,7 @@ options:
   -a, --admin           Enables request to admin execution level (available only for windows!)
   -t TARGET, --target TARGET
                         Specify a target to cargo (list installed targets: rustup target list --installed) (can be multiple)
-  -d, --debug           Enables debug mode (by default, compiles in release mode)
-  --yes-console         Enables console for windows (useful for debugging)
-  --no-temp-del         Prevents from temporary directory deletion (useful for debugging)
+  -d, --debug           Enables debug mode (by default, compiles in release mode) (prevents to temp/ directory deletion, enables console on windows releases)  
   -V, --verbose         Enables verbose mode (prints exceptions, current steps)
   -f FILE, --file FILE  Path to the file(s) to join (can be multiple) (start filename with "!" to autorun it)
   --no-banner           Disables RJoiner banner
@@ -192,7 +164,13 @@ Let add icon and admin rights requirement to binary.
 > Linux
 
 ```shell
-$ python3 rjoiner.py -f 
+$ python3 rjoiner.py -f file1.exe -f file2.exe -a -i icon.ico
+```
+
+> Windows
+
+```shell
+$ python rjoiner.py -f file1.exe -f file2.exe -a -i icon.ico
 ```
 
 
@@ -289,9 +267,14 @@ python rjoiner.py -i icon.ico -f Clicker.exe -f calc.vbs -f test/calc.vbs -f tes
 * Write the main idea of the PR
 * Write a changelog
 
-If you will provide any help to this project, I will add you to **Helpers list**
+---
 
-You read this to the end... Then I tell you about the name of joiner.
-Rusty was chosen because this tool written on Rust (and python, but... Okay).
-And tagline of this tool that: **Old doesn't mean bad**. But, this tool
-is new and Rust programming language is ~new, but okay.
+<!-- There is tags, you can ignore it -->
+<p>
+merge exe files, join exe files, executables joiner, rjoiner, rusty joiner,
+joiner on rust, rust programming language, merge executables, exe joiner,
+join vbs and executables, merge vbs and executables, merge scripts, merge
+python files, merge linux scripts, js files joiner, easy joiner, easy merge,
+compile two files in one, merge two files, commands macros, linux files merge,
+merge linux executables, ftdot
+</p>

@@ -97,12 +97,6 @@ fn main() {
                                 .unwrap()
                                 .replace("--key--", &key_b64)
                                 .replace("//--gen-code--", &(code_vec.join("\n    ")));
-  
-  // Check if console for windows is enabled
-  #[allow(unused_assignments)]
-  if cfg!(not(feature="enable_win_console")) {
-    generated_code = generated_code.replace("//--win-subsys--", "#![windows_subsystem = \"windows\"]");
-  }
 
   // Check if console for windows is enabled
   #[allow(unused_assignments)]

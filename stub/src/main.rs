@@ -19,7 +19,7 @@
 #![allow(dead_code)]
 #![allow(non_snake_case)]
 
-//--win-subsys--
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use std::fs;
 use std::path::PathBuf;

