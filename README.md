@@ -11,7 +11,6 @@
 ---
 
 - ✅ [Features](#features)
-- 😎 [Helpers list](#helpers-list) -- they're cool :)
 - 📦 [Requirements](#requirements)
 - 📥 [Installation](#installation)
 - ☢️ [Usage](#usage)
