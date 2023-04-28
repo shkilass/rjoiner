@@ -26,23 +26,21 @@
   **etc. (and linux executables)**
 * ⚙️ **Join scripts (only Linux) - ``.sh``, ``.py``**
 * ✅ **Works on any platform**
-* 🔐 **Contents of files is encrypted by ``AES256-GCM``**
-* 👤 **Admin rights requirement (optional) (only for Windows)**
+* 🔐 **Joined files is encrypted by ``AES256-GCM``**
+* 👤 **Can elevate to admin privileges (optional) (only for Windows)**
 * 🌆 **Custom icon (optional) (only for Windows)**
-* 🤏🏿 **Small weight**
+* 🤏🏿 **Small size when compiled**
 * 🗂 **GZIP comperssion**
 * 📜 **Message box on run (optional)**
 * 📵 **Anti-VM, Anti-Debug functional (optional)**
 * 📛 **Anti-Sandboxie (optional)**
-* 💎 **Can run commands when output file runned (optional)**
+* 💎 **Can run commands when run (optional)**
 * ⚙️ **Can add files to autorun (optional)**
 
 Join any executables for any platform. Stub of joiner is written on Rust, that
 allows to compile this to any platform. Joiner have cross platform structure,
 that allows to use it on Windows, Linux, Android and other platforms, that Rust
-compiler is supports. Joiner uses python as helper to create easy CLI. You can
-use it as utility in your projects. Ex.: Your program requires joined executables,
-you can with RJoiner CLI build this executable and use it for your program.
+compiler supports.
 
 
 ### Requirements
@@ -55,9 +53,9 @@ For first you need:
 
 ### Installation
 
-Just download last release from `releases` at right menu.
+Just download latest release from `releases` at right menu.
 
-Also, if you have **GIT CLI** installed on, you can copy repository via command:
+If you have **GIT CLI** installed on, you can copy repository via command:
 
 > Any platform
 
@@ -71,7 +69,8 @@ $ git clone https://github.com/ftdot/rjoiner
 > **Warning**
 >
 > The author(s) of this software are NOT responsible for its use by other users.
-> By using this tool, you agree that only you responsible for its use.
+>
+> By using this tool, you agree that only you responsible for its use and your actions.
 
 ```shell
 usage: rjoiner.py [-h] [-v] [--copyright] [--license] [-i ICON] [-a] [-t TARGET] [-d] [-V] -f FILE [--no-banner] [-M] [-m MESSAGE] [-T TITLE]
